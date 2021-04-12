@@ -1,4 +1,5 @@
 import { FastifyRequest } from 'fastify';
+import { puntosTable } from './utils';
 
 type score = {
   id: number;
@@ -6,11 +7,26 @@ type score = {
   score: number;
 };
 
-const scoreboards: score[] = [];
-
 async function getScoreboard() {
   // 1. Obtener información de AirTable. Formatear según la estructura que necesitamos.
-  const scores = scoreboards;
+  const scores: score[] = [];
+
+  await puntosTable
+    .select({
+      maxRecords: 20,
+    })
+    .eachPage((records, fetchNext) => {
+      records.forEach((record) => {
+        const { id, score, name } = record.fields;
+        scores.push({
+          id,
+          score,
+          name
+        });
+      });
+
+      fetchNext();
+    });
 
   // 2. Retornar puntuaciones nuevas.
   return scores;
@@ -18,22 +34,20 @@ async function getScoreboard() {
 
 async function updateScoreboard(req: FastifyRequest) {
   // 1. Obtener datos de body
-  const body = req.body as {
+  const { name, score } = req.body as {
     name: string;
     score: number;
   };
 
-  // 2. Actualizar información en AirTable. Validar errores con try/catch?
-  scoreboards.push({
-    id: scoreboards.length + 1,
-    name: body.name,
-    score: body.score,
+  // 2. Actualizar información en base de datos.
+  await puntosTable.create({
+    name,
+    score,
   });
 
   // 3. Retornar información actualizada
   return {
     response: 'updated',
-    result: scoreboards,
   };
 }
 
