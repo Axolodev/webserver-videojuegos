@@ -1,0 +1,15 @@
+{
+  "name": "backend-videojuegos",
+  "version": "1.0.0",
+  "description": "Backend de la aplicación usada para guardar el scoreboard de un videojuego.",
+  "main": "index.js",
+  "author": "robruizr",
+  "license": "MIT",
+  "private": true,
+  "scripts": {
+    "start": "node index.js"
+  },
+  "dependencies": {
+    "fastify": "^3.14.2"
+  }
+}
