@@ -8,9 +8,9 @@ type score = {
 };
 
 async function getScoreboard() {
-  // 1. Obtener información de AirTable. Formatear según la estructura que necesitamos.
   const scores: score[] = [];
-
+  
+  // 1. Obtener información de AirTable. Formatear según la estructura que necesitamos.
   await puntosTable
     .select({
       maxRecords: 20,
